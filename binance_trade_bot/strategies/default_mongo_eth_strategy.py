@@ -88,7 +88,7 @@ class Strategy(AutoTrader):
             self.db.set_current_coin(pair.to_coin)
             self.update_trade_threshold(pair.to_coin, result.price)
             # Update mongodb
-            coin = pair.to_coin.symbol + "BTC"
+            coin = pair.to_coin.symbol + "ETH"
             price_value = self.manager.get_ticker_price(coin)
             self.update_mongodb_last_buy_price(coin, price_value, result.cumulative_quote_qty/result.price)
             self.logger.info(

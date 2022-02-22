@@ -7,6 +7,7 @@ from .database import Database
 from .logger import Logger
 from .scheduler import SafeScheduler
 from .strategies import get_strategy
+import pymongo
 
 
 def main():
@@ -15,6 +16,7 @@ def main():
 
     config = Config()
     db = Database(logger, config)
+    mongodb_client = pymongo.MongoClient("mongodb://172.17.0.1:27017/", connectTimeoutMS=10000)
     manager = BinanceAPIManager(config, db, logger)
     # check if we can access API feature that require valid config
     try:
@@ -27,7 +29,7 @@ def main():
     if strategy is None:
         logger.error("Invalid strategy name")
         return
-    trader = strategy(manager, db, logger, config)
+    trader = strategy(manager, db, logger, config, mongodb_client=mongodb_client)
     logger.info(f"Chosen strategy: {config.STRATEGY}")
 
     logger.info("Creating database schema if it doesn't already exist")

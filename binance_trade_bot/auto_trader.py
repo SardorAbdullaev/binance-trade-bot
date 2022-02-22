@@ -8,12 +8,13 @@ from .config import Config
 from .database import Database
 from .logger import Logger
 from .models import Coin, CoinValue, Pair
-
+import pymongo
 
 class AutoTrader:
-    def __init__(self, binance_manager: BinanceAPIManager, database: Database, logger: Logger, config: Config):
+    def __init__(self, binance_manager: BinanceAPIManager, database: Database, logger: Logger, config: Config, mongodb_client: pymongo.MongoClient):
         self.manager = binance_manager
         self.db = database
+        self.mongodb_client = mongodb_client
         self.logger = logger
         self.config = config
 

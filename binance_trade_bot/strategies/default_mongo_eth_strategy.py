@@ -13,7 +13,7 @@ class Strategy(AutoTrader):
 
     def update_mongodb_last_buy_price(self, symbol, buy_price, quantity):
         try:
-            trailing_bot_db = self.mongodb_client["binance-bot"]
+            trailing_bot_db = self.mongo_manager["binance-bot"]
         except InvalidName:
             self.logger.error("Please start the trailing_bot, binance-bot db can't be found")
             return

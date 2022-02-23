@@ -1,7 +1,6 @@
 import random
 import sys
 from datetime import datetime
-from pymongo.errors import InvalidName
 
 from binance_trade_bot.auto_trader import AutoTrader
 
@@ -10,26 +9,6 @@ class Strategy(AutoTrader):
     def initialize(self):
         super().initialize()
         self.initialize_current_coin()
-
-    def update_mongodb_last_buy_price(self, symbol, buy_price, quantity):
-        try:
-            trailing_bot_db = self.mongodb_client["binance-bot"]
-        except InvalidName:
-            self.logger.error("Please start the trailing_bot, binance-bot db can't be found")
-            return
-        db_col = trailing_bot_db["trailing-trade-symbols"]
-        key = f"{symbol}-last-buy-price"
-        query = {
-            "key": key
-        }
-        newvalues = {
-            "$set": {
-                "key": key,
-                "lastBuyPrice": buy_price,
-                "quantity": quantity
-            }
-        }
-        db_col.update_one(query, newvalues, upsert=True)
 
     def scout(self):
         """
@@ -88,11 +67,10 @@ class Strategy(AutoTrader):
             self.db.set_current_coin(pair.to_coin)
             self.update_trade_threshold(pair.to_coin, result.price)
             # Update mongodb
-            coin = pair.to_coin.symbol + "BTC"
-            price_value = self.manager.get_ticker_price(coin)
-            self.update_mongodb_last_buy_price(coin, price_value, result.cumulative_quote_qty/result.price)
-            self.logger.info(
-                f"{coin}: Last buy price of {price_value} in total amount of {result.cumulative_quote_qty} is persisted")
+            price_value = self.manager.get_ticker_price(pair.to_coin.symbol + "BTC")
+            qnty = result.cumulative_quote_qty / result.price
+            self.mongo_manager.execute_trx(pair.from_coin.symbol, pair.to_coin.symbol, price_value, qnty)
+
             return result
 
         self.logger.info("Couldn't buy, going back to scouting mode...")

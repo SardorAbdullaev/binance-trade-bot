@@ -25,7 +25,7 @@ class MongoBinanceTraderManager:
         if last_bought:
             return last_bought["lastBuyPrice"], last_bought["quantity"]
         else:
-            return None
+            return 0, 0
 
     def _drop_last_buy_price(self, from_symbol):
         query = self.get_query_object(from_symbol)

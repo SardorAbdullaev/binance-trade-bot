@@ -44,7 +44,7 @@ class MongoBinanceTraderManager:
         self.db_col.update_one(query, new_values, upsert=True)
 
     def execute_trx(self, from_symbol, to_symbol, buy_price, quantity):
-        last_price, last_quantity = self._get_last_buy_price_quantity(from_symbol)
+        last_price, last_quantity = self._get_last_buy_price_quantity(to_symbol)
         total_quantity = quantity + last_quantity
         # 1.0075 is binance fee
         avg_price = (buy_price * quantity + last_price * last_quantity) * 1.0075 / total_quantity

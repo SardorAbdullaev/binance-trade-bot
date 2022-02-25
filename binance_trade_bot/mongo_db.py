@@ -43,11 +43,17 @@ class MongoBinanceTraderManager:
         query = self.get_query_object(symbol)
         self.db_col.update_one(query, new_values, upsert=True)
 
-    def execute_trx(self, from_symbol, to_symbol, buy_price, quantity):
-        last_price, last_quantity = self._get_last_buy_price_quantity(to_symbol)
-        total_quantity = quantity + last_quantity
-        # 1.0075 is binance fee
-        avg_price = (buy_price * quantity + last_price * last_quantity) * 1.0075 / total_quantity
+    def execute_trx(self, from_symbol, to_symbol, quantity):
+        from_last_price, from_last_quantity = self._get_last_buy_price_quantity(from_symbol)
+        total_spent = from_last_price * from_last_quantity
+
+        to_last_price, to_last_quantity = self._get_last_buy_price_quantity(to_symbol)
+        total_exists = to_last_price * to_last_quantity
+
+        total_quantity = quantity + to_last_quantity
+
+        # 1.015 is a binance fee Coin A -> Bridge -> Coin B
+        avg_price = (total_exists + total_spent) * 1.015 / total_quantity
         self._drop_last_buy_price(from_symbol)
         self._update_mongodb_last_buy_price(to_symbol, avg_price, total_quantity)
         self.logger.info(f"AVG Last Buy Price of {avg_price:0.10f} for {to_symbol}/BTC in total amount of {total_quantity:0.10f} is persisted in mongodb")

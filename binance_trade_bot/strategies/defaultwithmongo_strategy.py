@@ -67,9 +67,8 @@ class Strategy(AutoTrader):
             self.db.set_current_coin(pair.to_coin)
             self.update_trade_threshold(pair.to_coin, result.price)
             # Update mongodb
-            price_value = self.manager.get_ticker_price(pair.to_coin.symbol + "BTC")
             qnty = result.cumulative_quote_qty / result.price
-            self.mongo_manager.execute_trx(pair.from_coin.symbol, pair.to_coin.symbol, price_value, qnty)
+            self.mongo_manager.execute_trx(pair.from_coin.symbol, pair.to_coin.symbol, qnty)
 
             return result
 

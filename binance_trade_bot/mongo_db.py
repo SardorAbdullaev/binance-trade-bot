@@ -43,9 +43,12 @@ class MongoBinanceTraderManager:
         query = self.get_query_object(symbol)
         self.db_col.update_one(query, new_values, upsert=True)
 
-    def execute_trx(self, from_symbol, to_symbol, quantity):
+    def execute_trx(self, from_symbol, to_symbol, quantity, price_value):
         from_last_price, from_last_quantity = self._get_last_buy_price_quantity(from_symbol)
-        total_spent = from_last_price * from_last_quantity
+        if from_last_price == 0:
+            total_spent = price_value * quantity
+        else:
+            total_spent = from_last_price * from_last_quantity
 
         to_last_price, to_last_quantity = self._get_last_buy_price_quantity(to_symbol)
         total_exists = to_last_price * to_last_quantity

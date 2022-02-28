@@ -17,6 +17,7 @@ class AutoTrader:
         self.mongo_manager = mongo_manager
         self.logger = logger
         self.config = config
+        self.scouted_times_counter = 0
 
     def initialize(self):
         self.initialize_trade_thresholds()

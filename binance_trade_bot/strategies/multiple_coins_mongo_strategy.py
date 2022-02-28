@@ -67,7 +67,7 @@ class Strategy(AutoTrader):
                 continue
 
             have_coin = True
-
+            self.scouted_times_counter += 1
             # Display on the console, the current coin+Bridge, so users can see *some* activity and not think the bot
             # has stopped. Not logging though to reduce log size.
             print(
@@ -75,6 +75,10 @@ class Strategy(AutoTrader):
                 f"Current coin: {coin + self.config.BRIDGE} ",
                 end="\r",
             )
+
+            if self.scouted_times_counter % 9000 == 0:
+                self.scouted_times_counter = 0
+                self.logger.info("I am scouting the best trades. " + f"Current coin: {current_coin_symbol + self.config.BRIDGE} ")
 
             self._jump_to_best_coin(coin, coin_price)
 

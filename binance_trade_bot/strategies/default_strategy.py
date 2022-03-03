@@ -14,6 +14,7 @@ class Strategy(AutoTrader):
         """
         Scout for potential jumps from the current coin to another coin
         """
+        self.scouted_times_counter += 1
         current_coin = self.db.get_current_coin()
         # Display on the console, the current coin+Bridge, so users can see *some* activity and not think the bot has
         # stopped. Not logging though to reduce log size.
@@ -22,6 +23,9 @@ class Strategy(AutoTrader):
             f"Current coin: {current_coin + self.config.BRIDGE} ",
             end="\r",
         )
+        if self.scouted_times_counter % 9000 == 0:
+            self.scouted_times_counter = 0
+            self.logger.info("I am scouting the best trades. " + f"Current coin: {current_coin + self.config.BRIDGE} ")
 
         current_coin_price = self.manager.get_ticker_price(current_coin + self.config.BRIDGE)
 

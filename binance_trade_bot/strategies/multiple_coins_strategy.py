@@ -16,7 +16,7 @@ class Strategy(AutoTrader):
 
         if current_coin is not None:
             current_coin_symbol = current_coin.symbol
-
+        self.scouted_times_counter += 1
         for coin in self.db.get_coins():
             current_coin_balance = self.manager.get_currency_balance(coin.symbol)
             coin_price = self.manager.get_ticker_price(coin + self.config.BRIDGE)
@@ -39,6 +39,9 @@ class Strategy(AutoTrader):
                 f"Current coin: {coin + self.config.BRIDGE} ",
                 end="\r",
             )
+            if self.scouted_times_counter % 9000 == 0:
+                self.scouted_times_counter = 0
+                self.logger.info("I am scouting the best trades. " + f"Current coin: {current_coin_symbol + self.config.BRIDGE} ")
 
             self._jump_to_best_coin(coin, coin_price)
 

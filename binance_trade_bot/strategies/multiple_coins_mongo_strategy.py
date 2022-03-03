@@ -52,7 +52,7 @@ class Strategy(AutoTrader):
 
         if current_coin is not None:
             current_coin_symbol = current_coin.symbol
-
+        self.scouted_times_counter += 1
         for coin in self.db.get_coins():
             current_coin_balance = self.manager.get_currency_balance(coin.symbol)
             coin_price = self.manager.get_ticker_price(coin + self.config.BRIDGE)
@@ -67,7 +67,7 @@ class Strategy(AutoTrader):
                 continue
 
             have_coin = True
-            self.scouted_times_counter += 1
+
             # Display on the console, the current coin+Bridge, so users can see *some* activity and not think the bot
             # has stopped. Not logging though to reduce log size.
             print(

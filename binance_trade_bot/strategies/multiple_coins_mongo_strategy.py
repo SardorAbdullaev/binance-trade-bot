@@ -78,7 +78,7 @@ class Strategy(AutoTrader):
 
             if self.scouted_times_counter % 9000 == 0:
                 self.scouted_times_counter = 0
-                self.logger.info("I am scouting the best trades. " + f"Current coin: {current_coin_symbol + self.config.BRIDGE} ")
+                self.logger.info("I am scouting the best trades. " + f"Current coin: {coin + self.config.BRIDGE} ")
 
             self._jump_to_best_coin(coin, coin_price)
 
